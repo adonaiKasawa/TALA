@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 850 320" width="850" height="320" role="img" aria-label="TALA">
+  <title>TALA — animation de révélation</title>
+  <defs>
+    <linearGradient id="tl-amber" gradientUnits="userSpaceOnUse" x1="96" y1="176" x2="420" y2="348">
+      <stop offset="0" stop-color="#FFC64B"/>
+      <stop offset="0.52" stop-color="#F5913C"/>
+      <stop offset="1" stop-color="#DE4B2C"/>
+    </linearGradient>
+    <linearGradient id="tl-shine" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#fff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <mask id="tl-shape-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="850" height="320">
+      <rect x="0" y="0" width="850" height="320" fill="#000"/>
+      <g transform="translate(28 48) scale(0.4375)">
+        <path d="M78 246 Q256 104 434 246 Q256 452 78 246 Z" fill="#fff" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>
+        <path d="M226 206 L330 261 L226 316 Z" fill="#000" stroke="#000" stroke-width="20" stroke-linejoin="round"/>
+      </g>
+      <g transform="translate(300 100)" fill="none" stroke="#fff" stroke-width="26" stroke-miterlimit="8">
+        <path d="M0 13 H100 M50 13 V120"/>
+        <path d="M138 120 L190 0 L242 120 M156 78 H224"/>
+        <path d="M293 0 V107 H368"/>
+        <path d="M406 120 L458 0 L510 120 M424 78 H492"/>
+      </g>
+    </mask>
+    <style>
+      .tl-eye, .tl-tri, .tl-sheen { transform-box: fill-box; }
+      .tl-eye, .tl-tri { transform-origin: 50% 50%; }
+      .tl-eye  { animation: tlEye 4.2s cubic-bezier(.34,1.2,.5,1) infinite both; }
+      .tl-tri  { animation: tlTri 4.2s cubic-bezier(.34,1.3,.5,1) infinite both; }
+      .tl-word { animation: tlWord 4.2s linear infinite both; }
+      .tl-l    { animation: tlDraw 4.2s cubic-bezier(.5,0,.2,1) infinite both; }
+      .tl-l1   { animation-delay: 0s; }
+      .tl-l2   { animation-delay: .18s; }
+      .tl-l3   { animation-delay: .36s; }
+      .tl-l4   { animation-delay: .54s; }
+      .tl-sheen { animation: tlSheen 4.2s cubic-bezier(.4,0,.6,1) infinite both; }
+
+      @keyframes tlEye {
+        0%, 1%   { transform: scaleY(.04) scaleX(.72); }
+        14%      { transform: scaleY(1.06) scaleX(1); }
+        17%, 81% { transform: scaleY(1) scaleX(1); }
+        88%, 100%{ transform: scaleY(.04) scaleX(.72); }
+      }
+      @keyframes tlTri {
+        0%, 7%   { transform: scale(.35); opacity: 0; }
+        12%      { opacity: 1; }
+        17%      { transform: scale(1.14); opacity: 1; }
+        20%, 81% { transform: scale(1); opacity: 1; }
+        88%, 100%{ transform: scale(.35); opacity: 0; }
+      }
+      @keyframes tlWord {
+        0%, 8%   { opacity: 0; }
+        14%      { opacity: 1; }
+        81%      { opacity: 1; }
+        86%, 100%{ opacity: 0; }
+      }
+      @keyframes tlDraw {
+        0%, 14%  { stroke-dasharray: 1; stroke-dashoffset: 1; }
+        30%, 81% { stroke-dasharray: 1; stroke-dashoffset: 0; }
+        100%     { stroke-dasharray: 1; stroke-dashoffset: 0; }
+      }
+      @keyframes tlSheen {
+        0%, 37%  { transform: translateX(0); opacity: 0; }
+        41%      { opacity: 1; }
+        54%      { opacity: 1; }
+        57%, 100%{ transform: translateX(1240px); opacity: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .tl-eye, .tl-tri, .tl-sheen, .tl-word, .tl-l { animation: none; }
+        .tl-tri { opacity: 1; }
+        .tl-sheen { opacity: 0; }
+        .tl-l { stroke-dashoffset: 0; }
+      }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="850" height="320" fill="#0E1216"/>
+
+  <g transform="translate(28 48) scale(0.4375)">
+    <g class="tl-eye">
+      <path d="M78 246 Q256 104 434 246 Q256 452 78 246 Z" fill="url(#tl-amber)" stroke="url(#tl-amber)" stroke-width="10" stroke-linejoin="round"/>
+      <g class="tl-tri">
+        <path d="M226 206 L330 261 L226 316 Z" fill="#0E1216" stroke="#0E1216" stroke-width="20" stroke-linejoin="round"/>
+      </g>
+    </g>
+  </g>
+
+  <g class="tl-word" transform="translate(300 100)" fill="none" stroke="#F7F3EC" stroke-width="26" stroke-miterlimit="8">
+    <path class="tl-l tl-l1" pathLength="1" d="M0 13 H100 M50 13 V120"/>
+    <path class="tl-l tl-l2" pathLength="1" d="M138 120 L190 0 L242 120 M156 78 H224"/>
+    <path class="tl-l tl-l3" pathLength="1" d="M293 0 V107 H368"/>
+    <path class="tl-l tl-l4" pathLength="1" d="M406 120 L458 0 L510 120 M424 78 H492"/>
+  </g>
+
+  <g mask="url(#tl-shape-mask)">
+    <g transform="rotate(-18 425 160)">
+      <rect class="tl-sheen" x="-300" y="-260" width="170" height="800" fill="url(#tl-shine)" opacity="0"/>
+    </g>
+  </g>
+</svg>

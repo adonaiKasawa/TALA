@@ -1,0 +1,211 @@
+.profile-home {
+  max-width: 960px;
+  margin: auto;
+  width: 100%;
+  display: grid;
+  gap: 24px;
+}
+.profile-home > header,
+.space-messages > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.profile-identity {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  text-align: center;
+  padding: 24px;
+}
+.profile-identity > img,
+.profile-initial {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.profile-initial {
+  display: grid;
+  place-items: center;
+  background: #30271c;
+  color: #ffc64b;
+  font-size: 36px;
+}
+.profile-identity h3 {
+  font-size: 28px;
+}
+.profile-identity p {
+  white-space: pre-wrap;
+  max-width: 520px;
+}
+.profile-stats {
+  display: flex;
+  gap: 32px;
+}
+.profile-stats > span {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  color: #aaa;
+}
+.profile-stats strong {
+  font-size: 22px;
+  color: #fff;
+}
+.profile-tabs {
+  display: flex;
+  border-bottom: 1px solid #303236;
+}
+.profile-tabs > button {
+  flex: 1;
+  padding: 18px 8px;
+  border: 0;
+  background: none;
+  color: #aaa;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+.profile-tabs > button[aria-current] {
+  color: #fff;
+  border-bottom-color: #ffc64b;
+}
+.profile-video-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+}
+.profile-video-tile {
+  position: relative;
+  aspect-ratio: 0.7;
+  background: #242629;
+  overflow: hidden;
+  display: flex;
+  align-items: end;
+  color: white;
+}
+.profile-video-tile > img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.profile-video-tile > span {
+  z-index: 1;
+  padding: 12px;
+  font-size: 13px;
+  text-shadow: 0 1px 3px #000;
+}
+.profile-video-tile > small {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  font-size: 12px;
+  text-shadow: 0 1px 3px #000;
+}
+.space-person {
+  display: grid;
+  gap: 6px;
+  padding: 20px 12px;
+  border: 0;
+  border-bottom: 1px solid #303236;
+  background: none;
+  color: white;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+}
+.space-person > small {
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.space-messages {
+  display: grid;
+  gap: 20px;
+  max-width: 840px;
+  margin: auto;
+}
+.space-chat {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 25vh;
+  max-height: 55vh;
+  overflow: auto;
+  padding: 16px;
+}
+.space-bubble {
+  background: #242629;
+  border-radius: 18px;
+  padding: 12px 16px;
+  max-width: 85%;
+  align-self: flex-start;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.space-bubble.own {
+  background: #554022;
+  align-self: flex-end;
+}
+.space-bubble small {
+  display: block;
+  text-align: right;
+  color: #aaa;
+  font-size: 10px;
+  margin-top: 8px;
+}
+.space-write {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.space-write > input,
+.space-write > textarea {
+  flex: 1;
+  min-width: 0;
+  background: #242629;
+  color: white;
+  border: 1px solid #45464a;
+  border-radius: 12px;
+  padding: 14px;
+  font: inherit;
+}
+.space-write textarea {
+  resize: vertical;
+  max-height: 160px;
+}
+.profile-home button:focus-visible,
+.space-messages button:focus-visible {
+  outline: 3px solid #ffc64b;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .profile-home {
+    gap: 16px;
+  }
+  .profile-identity {
+    padding: 16px;
+  }
+  .profile-stats {
+    gap: 24px;
+  }
+  .profile-video-tile > small {
+    display: none;
+  }
+  .space-write {
+    gap: 8px;
+  }
+  .space-write > .button {
+    padding: 12px;
+  }
+  .space-chat {
+    padding: 4px;
+  }
+  .profile-home h2 {
+    font-size: 20px;
+  }
+}

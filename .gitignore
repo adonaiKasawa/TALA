@@ -1,0 +1,12 @@
+.previous-attempt/
+**/node_modules/
+**/dist/
+**/.env
+**/.env.*
+!**/.env.example
+**/.local/
+**/coverage/
+*.log
+authserver/src/generated/
+api/src/generated/
+/scripts/mcp_servers.txt

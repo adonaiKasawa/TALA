@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  username      String   @unique
+  passwordHash  String?
+  emailVerified Boolean  @default(false)
+  active        Boolean  @default(true)
+  role          String   @default("viewer")
+  phone         String?  @unique
+  mfaSecret     String?
+  mfaEnabled    Boolean  @default(false)
+  mfaCounter    BigInt   @default(0)
+  recoveryCodes String[] @default([])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  actions       AccountAction[]
+  externals     ExternalIdentity[]
+}
+model AccountAction {
+  id        String   @id
+  userId    String
+  kind      String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([expiresAt])
+}
+model ExternalIdentity {
+  provider String
+  subject  String
+  userId   String
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@id([provider, subject])
+}
+model OidcArtifact {
+  model      String
+  id         String
+  payload    String
+  accountId  String?
+  grantId    String?
+  sessionUid String?
+  uid        String?
+  userCode   String?
+  expiresAt  DateTime?
+  consumedAt DateTime?
+  @@id([model, id])
+  @@index([accountId, model])
+  @@index([grantId])
+  @@index([sessionUid])
+  @@index([uid])
+  @@index([userCode])
+  @@index([expiresAt])
+}
+model AuditEvent {
+  id        String   @id @default(uuid())
+  userId    String?
+  event     String
+  detail    Json
+  createdAt DateTime @default(now())
+  @@index([userId, createdAt])
+  @@index([createdAt])
+}
+model RateBucket {
+  key       String @id
+  count     Int
+  expiresAt DateTime
+  @@index([expiresAt])
+}
+
+model IdentityEvent {
+  sequence BigInt @id @default(autoincrement())
+  subject String
+  kind String
+  role String
+  active Boolean
+  createdAt DateTime @default(now())
+}
+
+model PhoneChallenge {
+  id String @id
+  userId String
+  phone String
+  purpose String
+  codeHash String
+  attempts Int @default(0)
+  expiresAt DateTime
+  consumedAt DateTime?
+  delivery String
+  sentAt DateTime?
+  @@index([expiresAt])
+}
+model Mail {
+  id        String   @id @default(uuid())
+  userId    String?
+  content   String
+  attempts  Int      @default(0)
+  sentAt    DateTime?
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+}
+model FederationAttempt {
+  id        String   @id
+  content   String
+  expiresAt DateTime
+  @@index([expiresAt])
+}

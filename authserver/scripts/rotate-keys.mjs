@@ -1,0 +1,10 @@
+import 'dotenv/config';
+import { generateKeyPairSync, randomBytes } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+const path = process.env.AUTH_JWKS_PATH;
+if (!path) throw new Error('AUTH_JWKS_PATH requis.');
+const jwks = JSON.parse(readFileSync(path, 'utf8'));
+const { privateKey } = generateKeyPairSync('rsa', { modulusLength: 2048 });
+jwks.keys.unshift({ ...privateKey.export({ format: 'jwk' }), kid: randomBytes(12).toString('hex'), use: 'sig', alg: 'RS256' });
+writeFileSync(path, JSON.stringify(jwks), { mode: 0o600 });
+console.log('Nouvelle clé ajoutée, anciennes conservées. Redémarrer les instances avec le même jeu de clés. Ne retirer les anciennes qu’après expiration des objets concernés.');

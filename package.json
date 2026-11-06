@@ -1,0 +1,8 @@
+{
+  "name": "tala-workspace",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "setup:clients": "node scripts/setup-clients.mjs"
+  }
+}

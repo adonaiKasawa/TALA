@@ -1,0 +1,59 @@
+@font-face {
+  font-family: Inter;
+  src: url("/fonts/InterVariable.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/fonts/PlusJakartaSans.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+}
+:root {
+  color-scheme: dark;
+  --background: #0e1012;
+  --surface: #191b1e;
+  --surface-raised: #242629;
+  --text-primary: #ffffff;
+  --text-secondary: #a4a4a8;
+  --accent: #ffc64b;
+  --accent-hover: #ffda85;
+  --on-accent: #0e1012;
+  --success: #ffc64b;
+  --success-surface: #2b2114;
+  --danger: #ff9db2;
+  --danger-surface: #351b26;
+  --border: #303236;
+  --control-border: #657080;
+  --font-interface: Inter, "Segoe UI", sans-serif;
+  --font-brand: "Plus Jakarta Sans", Inter, sans-serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-control: 10px;
+  --radius-panel: 20px;
+  --radius-pill: 999px;
+  --shadow-dialog: -16px 0 64px rgb(0 0 0 / 40%);
+  --duration-feedback: 140ms;
+  --ease-feedback: ease-out;
+  /* Compatibility aliases for the existing components; no contract changes. */
+  --ink: var(--text-primary);
+  --muted: var(--text-secondary);
+  --blue: var(--accent);
+  --blue-dark: var(--accent-hover);
+  --bg: var(--background);
+  --line: var(--border);
+  --green: var(--success);
+  --red: var(--danger);
+  --radius: var(--radius-panel);
+  --video-bg: var(--background);
+  --video-text: var(--text-primary);
+}

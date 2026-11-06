@@ -1,0 +1,38 @@
+LANCER PLATFORM
+
+cd "C:\Users\Mbulaa\ADONAIMBULA\projet\Vone"
+
+node .\scripts\dev.mjs
+
+
+
+
+
+LANCER MOBILE
+
+cd "C:\Users\Mbulaa\ADONAIMBULA\projet\Vone\mobile"
+
+node .\node_modules\react-native\cli.js start --reset-cache
+
+cd "C:\Users\Mbulaa\ADONAIMBULA\projet\Vone\mobile\android"
+
+$env:JAVA_HOME = "C:\Program Files\Java\jdk-17"
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
+
+& "$env:ANDROID_HOME\platform-tools\adb.exe" devices
+
+# Accès Android à Metro, à l’AuthServer et à l’API du PC
+& "$env:ANDROID_HOME\platform-tools\adb.exe" reverse tcp:8081 tcp:8081
+& "$env:ANDROID_HOME\platform-tools\adb.exe" reverse tcp:4000 tcp:4000
+& "$env:ANDROID_HOME\platform-tools\adb.exe" reverse tcp:4001 tcp:4001
+
+# Compilation et installation sans gradlew.bat
+& "$env:JAVA_HOME\bin\java.exe" `
+  -classpath ".\gradle\wrapper\gradle-wrapper.jar" `
+  org.gradle.wrapper.GradleWrapperMain `
+  app:installDebug `
+  "-PreactNativeArchitectures=arm64-v8a,x86_64" `
+  --no-problems-report
+
+# Ouvrir TALA
+& "$env:ANDROID_HOME\platform-tools\adb.exe" shell am start -n com.talamobile/.MainActivity

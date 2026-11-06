@@ -1,0 +1,18 @@
+import { createHash } from 'node:crypto';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+if (process.platform !== 'win32' || process.arch !== 'x64') throw new Error('Sur cet OS, installer Mailpit selon https://mailpit.axllent.org/docs/install/ dans .local/mailpit.');
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const folder = resolve(root, '.local/mailpit');
+await mkdir(folder, { recursive: true });
+const response = await fetch('https://github.com/axllent/mailpit/releases/download/v1.33.0/mailpit-windows-amd64.zip');
+if (!response.ok) throw new Error('Téléchargement Mailpit impossible.');
+const data = Buffer.from(await response.arrayBuffer());
+if (createHash('sha256').update(data).digest('hex') !== '47122dd828ff80dcaef62b2952c478b178afadadf066c990489608e537121bfd') throw new Error('Somme SHA-256 Mailpit incorrecte.');
+await writeFile(resolve(folder, 'download.zip'), data);
+const script = "Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory((Join-Path (Get-Location) '.local/mailpit/download.zip'), (Join-Path (Get-Location) '.local/mailpit'), $true)";
+const result = spawnSync('pwsh', ['-NoProfile', '-Command', script], { cwd: root, stdio: 'inherit', windowsHide: true });
+if (result.status !== 0) throw new Error('Extraction Mailpit impossible.');
+console.log('Mailpit 1.33.0 installé localement, archive vérifiée.');

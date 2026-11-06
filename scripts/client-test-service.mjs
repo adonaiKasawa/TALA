@@ -1,0 +1,11 @@
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
+const require = createRequire(import.meta.url);
+const target = process.argv[2];
+const { [target === 'media' ? 'createMediaWorker' : target === 'auth' ? 'createAuthApp' : 'createApiApp']: create } = require(resolve(target === 'media' ? 'api/dist/videos/media-worker.module.js' : target === 'auth' ? 'authserver/dist/app.factory.js' : 'api/dist/app.factory.js'));
+const app = await create();
+if (target !== 'media') await app.listen(Number(process.env[target === 'auth' ? 'AUTH_PORT' : 'API_PORT']), '127.0.0.1');
+process.send?.({ ready: true });
+let closing = false;
+process.on('message', message => { if (message === 'stop' && !closing) { closing = true; void app.close().then(() => process.exit(0)); } });
+process.on('disconnect', () => { if (!closing) { closing = true; void app.close().then(() => process.exit(0)); } });

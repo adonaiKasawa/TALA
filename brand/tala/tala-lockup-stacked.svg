@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 620" width="520" height="620" role="img" aria-label="TALA">
+  <defs>
+    <linearGradient id="st-amber" gradientUnits="userSpaceOnUse" x1="96" y1="176" x2="420" y2="348">
+      <stop offset="0" stop-color="#FFC64B"/>
+      <stop offset="0.52" stop-color="#F5913C"/>
+      <stop offset="1" stop-color="#DE4B2C"/>
+    </linearGradient>
+    <mask id="st-play" maskUnits="userSpaceOnUse" x="0" y="0" width="512" height="512">
+      <rect x="0" y="0" width="512" height="512" fill="#000"/>
+      <path d="M78 246 Q256 104 434 246 Q256 452 78 246 Z" fill="#fff" stroke="#fff" stroke-width="10" stroke-linejoin="round"/>
+      <path d="M226 206 L330 261 L226 316 Z" fill="#000" stroke="#000" stroke-width="20" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+  <rect x="0" y="0" width="520" height="620" fill="#0E1216"/>
+  <g transform="translate(90 40) scale(0.664)">
+    <path d="M78 246 Q256 104 434 246 Q256 452 78 246 Z" fill="url(#st-amber)" stroke="url(#st-amber)" stroke-width="10" stroke-linejoin="round" mask="url(#st-play)"/>
+  </g>
+  <g transform="translate(98 440) scale(0.62)" fill="none" stroke="#F7F3EC" stroke-width="26" stroke-miterlimit="8">
+    <path d="M0 13 H100 M50 13 V120"/>
+    <path d="M138 120 L190 0 L242 120 M156 78 H224"/>
+    <path d="M293 0 V107 H368"/>
+    <path d="M406 120 L458 0 L510 120 M424 78 H492"/>
+  </g>
+</svg>

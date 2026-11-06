@@ -1,0 +1,8 @@
+CREATE TABLE "DirectThread" ("id" TEXT NOT NULL, "pairKey" TEXT NOT NULL, "leftId" TEXT NOT NULL, "rightId" TEXT NOT NULL, "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, CONSTRAINT "DirectThread_pkey" PRIMARY KEY ("id"), CONSTRAINT "DirectThread_leftId_fkey" FOREIGN KEY ("leftId") REFERENCES "Profile"("id") ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT "DirectThread_rightId_fkey" FOREIGN KEY ("rightId") REFERENCES "Profile"("id") ON DELETE CASCADE ON UPDATE CASCADE);
+CREATE UNIQUE INDEX "DirectThread_pairKey_key" ON "DirectThread"("pairKey");
+CREATE INDEX "DirectThread_leftId_updatedAt_idx" ON "DirectThread"("leftId", "updatedAt");
+CREATE INDEX "DirectThread_rightId_updatedAt_idx" ON "DirectThread"("rightId", "updatedAt");
+CREATE TABLE "DirectMessage" ("id" TEXT NOT NULL, "threadId" TEXT NOT NULL, "senderId" TEXT NOT NULL, "clientId" TEXT NOT NULL, "text" VARCHAR(2000) NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP, "readAt" TIMESTAMP(3), CONSTRAINT "DirectMessage_pkey" PRIMARY KEY ("id"), CONSTRAINT "DirectMessage_threadId_fkey" FOREIGN KEY ("threadId") REFERENCES "DirectThread"("id") ON DELETE CASCADE ON UPDATE CASCADE, CONSTRAINT "DirectMessage_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "Profile"("id") ON DELETE CASCADE ON UPDATE CASCADE);
+CREATE UNIQUE INDEX "DirectMessage_threadId_senderId_clientId_key" ON "DirectMessage"("threadId", "senderId", "clientId");
+CREATE INDEX "DirectMessage_threadId_createdAt_id_idx" ON "DirectMessage"("threadId", "createdAt", "id");
+CREATE INDEX "DirectMessage_senderId_createdAt_idx" ON "DirectMessage"("senderId", "createdAt");

@@ -1,0 +1,367 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id          String   @id @default(uuid())
+  issuer      String
+  subject     String
+  username    String   @unique @db.VarChar(30)
+  displayName String   @db.VarChar(80)
+  avatarUrl   String?  @db.VarChar(2048)
+  bio         String   @default("") @db.VarChar(500)
+  links       Json     @default("[]")
+  isPrivate   Boolean  @default(false)
+  languages   String[] @default([])
+  country     String?  @db.Char(2)
+  interests   String[] @default([])
+  locale      String   @default("fr") @db.VarChar(35)
+  suspended   Boolean @default(false)
+  verifiedAt  DateTime?
+  discoveryResetAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  videos      Video[]
+  reactions   VideoReaction[]
+  comments    VideoComment[]
+  watchSessions WatchSession[]
+  relationsFrom CreatorRelation[] @relation("relationFrom")
+  relationsTo CreatorRelation[] @relation("relationTo")
+  collections Collection[]
+  verification VerificationRequest?
+  reposts Repost[]
+  commentLikes CommentLike[]
+  snapshots FeedSnapshot[]
+  directThreadsLeft DirectThread[] @relation("directLeft")
+  directThreadsRight DirectThread[] @relation("directRight")
+  directMessages DirectMessage[]
+  @@unique([issuer, subject])
+}
+
+model DirectThread {
+  id String @id @default(uuid())
+  pairKey String @unique
+  leftId String
+  rightId String
+  left Profile @relation("directLeft", fields: [leftId], references: [id], onDelete: Cascade)
+  right Profile @relation("directRight", fields: [rightId], references: [id], onDelete: Cascade)
+  updatedAt DateTime @default(now())
+  messages DirectMessage[]
+  @@index([leftId, updatedAt])
+  @@index([rightId, updatedAt])
+}
+
+model DirectMessage {
+  id String @id @default(uuid())
+  threadId String
+  senderId String
+  clientId String
+  text String @db.VarChar(2000)
+  createdAt DateTime @default(now())
+  readAt DateTime?
+  thread DirectThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender Profile @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  @@unique([threadId, senderId, clientId])
+  @@index([threadId, createdAt, id])
+  @@index([senderId, createdAt])
+}
+
+enum VideoStatus {
+  draft
+  uploading
+  queued
+  analyzing
+  optimizing
+  transferring
+  mux_processing
+  ready
+  published
+  failed
+  rejected
+  deleted
+}
+
+enum VideoVisibility {
+  public
+  unlisted
+  private
+}
+
+model Video {
+  id                 String @id @default(uuid())
+  issuer             String
+  subject            String
+  profileId          String?
+  profile            Profile? @relation(fields: [profileId], references: [id], onDelete: SetNull)
+  title              String @db.VarChar(140)
+  description        String @default("") @db.VarChar(5000)
+  hashtags           String[] @default([])
+  language           String @default("und") @db.VarChar(35)
+  category           String @default("") @db.VarChar(60)
+  country            String? @db.Char(2)
+  allowDownload      Boolean @default(false)
+  pinnedRank         Int?
+  soundId            String?
+  challengeId        String?
+  trial              Boolean @default(false)
+  replyToCommentId   String?
+  visibility         VideoVisibility @default(private)
+  kind               String @default("short")
+  status             VideoStatus @default(draft)
+  driver             String
+  isTest             Boolean @default(false)
+  expectedBytes      Int
+  uploadedBytes      Int @default(0)
+  sourceHash         String?
+  sourceBytes        Int?
+  preparedBytes      Int?
+  duration           Float?
+  width              Int?
+  height             Int?
+  fps                Float?
+  optimization       String?
+  qualityScore       Float?
+  thumbnailTime      Float @default(0)
+  viewCount          Int @default(0)
+  editRecipe         Json?
+  thumbnailPending   Boolean @default(true)
+  errorCode          String?
+  generation         Int @default(1)
+  attempts           Int @default(0)
+  nextAttemptAt      DateTime?
+  leaseId            String?
+  leaseUntil         DateTime?
+  muxAttempt         String @unique @default(uuid())
+  muxCreationStarted Boolean @default(false)
+  muxUploadId        String? @unique
+  muxAssetId         String? @unique
+  muxPlaybackId      String?
+  uploadedAt         DateTime?
+  publishedAt        DateTime?
+  expiresAt          DateTime
+  temporaryCleanedAt DateTime?
+  deletedCleanedAt   DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  reactions          VideoReaction[]
+  comments           VideoComment[]
+  watchSessions      WatchSession[]
+  captions           VideoCaption[]
+  reposts            Repost[]
+  sound              Sound? @relation(fields: [soundId], references: [id], onDelete: SetNull)
+  challenge          Challenge? @relation(fields: [challengeId], references: [id], onDelete: SetNull)
+  replyToComment     VideoComment? @relation("videoReplies", fields: [replyToCommentId], references: [id], onDelete: SetNull)
+  @@index([language, category, country, publishedAt])
+  @@index([issuer, subject, createdAt])
+  @@index([status, leaseUntil])
+  @@index([visibility, status, publishedAt])
+  @@index([hashtags], type: Gin)
+}
+
+model VideoWebhook {
+  id        String @id
+  type      String
+  createdAt DateTime @default(now())
+  @@index([createdAt])
+}
+
+model VideoReaction {
+  profileId String
+  videoId String
+  kind String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@id([profileId, videoId, kind])
+  @@index([videoId, kind])
+}
+
+model CreatorRelation {
+  fromId String
+  toId String
+  kind String
+  from Profile @relation("relationFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  to Profile @relation("relationTo", fields: [toId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@id([fromId, toId, kind])
+  @@index([toId, kind])
+}
+
+model VideoComment {
+  id String @id @default(uuid())
+  videoId String
+  profileId String
+  parentId String?
+  pinned Boolean @default(false)
+  text String @db.VarChar(1000)
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  parent VideoComment? @relation("replies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies VideoComment[] @relation("replies")
+  likes CommentLike[]
+  videoReplies Video[] @relation("videoReplies")
+  createdAt DateTime @default(now())
+  @@index([videoId, createdAt, id])
+}
+
+model WatchSession {
+  id String @id
+  profileId String
+  videoId String
+  surface String
+  sequence Int @default(0)
+  watchedMs Int @default(0)
+  viewCounted Boolean @default(false)
+  positionMs Int @default(0)
+  completed Boolean @default(false)
+  replayCount Int @default(0)
+  lastEvent String @default("impression")
+  features Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  events WatchEvent[]
+  @@index([profileId, updatedAt, id])
+  @@index([createdAt])
+}
+
+model WatchEvent {
+  sessionId String
+  sequence Int
+  type String
+  watchedMs Int
+  positionMs Int
+  createdAt DateTime @default(now())
+  session WatchSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  @@id([sessionId, sequence])
+}
+
+model VideoCaption {
+  videoId String
+  language String @db.VarChar(8)
+  label String @db.VarChar(60)
+  content String @db.Text
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  @@id([videoId, language])
+}
+
+model RateBucket {
+  key       String @id
+  count     Int
+  expiresAt DateTime
+  @@index([expiresAt])
+}
+
+model AccountState {
+  issuer String
+  subject String
+  role String @default("viewer")
+  active Boolean @default(true)
+  deleted Boolean @default(false)
+  sequence BigInt @default(0)
+  @@id([issuer, subject])
+}
+
+model IdentitySync {
+  issuer String @id
+  sequence BigInt @default(0)
+}
+
+model Collection {
+  id String @id @default(uuid())
+  profileId String
+  name String @db.VarChar(80)
+  videos String[] @default([])
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@unique([profileId, name])
+}
+
+model Repost {
+  profileId String
+  videoId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  video Video @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@id([profileId, videoId])
+}
+
+model CommentLike {
+  profileId String
+  commentId String
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  comment VideoComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@id([profileId, commentId])
+}
+
+model VerificationRequest {
+  id String @id @default(uuid())
+  profileId String @unique
+  reason String @db.VarChar(2000)
+  proofUrls String[] @default([])
+  status String @default("pending")
+  reviewReason String?
+  reviewedBy String?
+  reviewedAt DateTime?
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Sound {
+  id String @id @default(uuid())
+  label String @db.VarChar(120)
+  creatorSubject String
+  creatorIssuer String
+  reuseAllowed Boolean @default(false)
+  videos Video[]
+  createdAt DateTime @default(now())
+}
+
+model Challenge {
+  id String @id @default(uuid())
+  slug String @unique @db.VarChar(60)
+  title String @db.VarChar(120)
+  description String @db.VarChar(2000)
+  startsAt DateTime
+  endsAt DateTime
+  active Boolean @default(true)
+  videos Video[]
+  createdAt DateTime @default(now())
+}
+
+model FeedSnapshot {
+  id String @id @default(uuid())
+  profileId String
+  scope String
+  videos String[]
+  profile Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  @@index([expiresAt])
+}
+
+model RecommendationModel {
+  id String @id @default(uuid())
+  weights Json
+  metrics Json
+  active Boolean @default(false)
+  trainedUntil DateTime
+  createdAt DateTime @default(now())
+}
+
+model BusinessAudit {
+  id String @id @default(uuid())
+  actor String
+  action String
+  target String
+  detail Json @default("{}")
+  createdAt DateTime @default(now())
+}
